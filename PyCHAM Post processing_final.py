@@ -15,6 +15,12 @@ radius = radius.readlines()
 radius_mm = pd.DataFrame([radius[i].split(",") for i in range(2, len(radius))])
 radius_mm.to_csv('Radius (mm).csv')
 
+##### time
+time_path = r"time"
+time = open(time_path, "r+")
+time = time.readlines()
+time = np.array([float(time[i][:time[i].index('+') - 1]) * 10 ** int(time[i][time[i].index('+') + 1:-1]) / 60 for i in range(1, len(time))])
+
 ##### Concentration information
 # Input filepath here #
 in_file_path = r"concentrations_all_components_all_times_gas_particle_wall"
