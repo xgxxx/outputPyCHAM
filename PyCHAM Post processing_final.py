@@ -19,7 +19,7 @@ radius_mm.to_csv('Radius (mm).csv')
 # Input filepath here #
 in_file_path = r"concentrations_all_components_all_times_gas_particle_wall"
 information_file_path = r"model_and_component_constants"
-chamber_environemnt_file_path = r"chamber_environmental_conditions"
+chamber_environment_file_path = r"chamber_environmental_conditions"
 
 # Read concentration data
 concentration_file = open(in_file_path, "r+")
@@ -79,17 +79,9 @@ gas_phase[0,0] = gas_phase[0,0][2:]
 
 # species corresponding to molecular weight
 species = gas_phase[0:(len(gas_phase)),0].tolist()
-# O/C ratio
-OCratio = information[14].split(",")
-# Fix the first
-OCratio = OCratio[1:len(OCratio)] 
-OCratio[0] = OCratio[0][2:len(OCratio[0])]
-OCratio[-1] = OCratio[-1][0:len(OCratio[-1])-3]
-# Convert to float
-OCratio = [float(i) for i in OCratio]
 
 # Read chamber environment temperature
-environment = open(chamber_environemnt_file_path, "r+")
+environment = open(chamber_environment_file_path, "r+")
 environment = environment.readlines()
 environment = environment[1:len(environment)]
 temperature = [environment[i].split(",")[0] for i in range(len(environment))]
@@ -119,6 +111,48 @@ total_particulate_mass_species_time = np.array_split(particulate_phase_mass, int
 total = np.zeros(shape=(len(molecular_weight),len(environment)))
 for items in total_particulate_mass_species_time:
     total = total + items
+
+##### particle_number_concentration_dry_number
+particle_number_concentration_dry_file_path = r"particle_number_concentration_dry"
+particle_number_concentration_dry = open(particle_number_concentration_dry_file_path, "r+")
+particle_number_concentration_dry = particle_number_concentration_dry.readlines()
+particle_number_concentration_dry = pd.DataFrame([particle_number_concentration_dry[i].split(",") for i in range(2, len(particle_number_concentration_dry))])
+particle_number_concentration_dry.to_csv('particle_number_concentration_dry_number.csv')
+
+##### particle_number_concentration_wet_number
+particle_number_concentration_wet_file_path = r"particle_number_concentration_wet"
+particle_number_concentration_wet = open(particle_number_concentration_wet_file_path, "r+")
+particle_number_concentration_wet = particle_number_concentration_wet.readlines()
+particle_number_concentration_wet= pd.DataFrame([particle_number_concentration_wet[i].split(",") for i in range(2, len(particle_number_concentration_wet))])
+particle_number_concentration_wet.to_csv('particle_number_concentration_wet_number.csv')
+
+##### O3_rate_of_change
+O3_rate_of_change_file_path = r"O3_rate_of_change"
+O3_rate_of_change = open(O3_rate_of_change_file_path, "r+")
+O3_rate_of_change = O3_rate_of_change.readlines()
+O3_rate_of_change = np.array([O3_rate_of_change[i].split(",") for i in range(1, len(O3_rate_of_change))])
+O3_rate_of_change = O3_rate_of_change.astype(float)
+
+# get O3_rate_of_change (number concentration, unit: molecules/cc.s (air))
+O3_rate_of_change_number = O3_rate_of_change
+pd.DataFrame(O3_rate_of_change_number).to_csv("O3_rate_of_change_number.csv")
+
+# convert number concentration into mass concentration (unit: ug/m3)
+factor_need = np.tile(factor[:1], len(O3_rate_of_change[0]))
+O3_rate_of_change_ppb = O3_rate_of_change / factor_need
+temp = np.tile(molecular_weight[:1], len(O3_rate_of_change_ppb))
+temperature_need = np.tile(temperature[:1], len(O3_rate_of_change[0]))
+O3_rate_of_change_mass = O3_rate_of_change_ppb * 12.187 / temperature_need
+O3_rate_of_change_mass = (O3_rate_of_change_mass.transpose() * temp.transpose()).transpose()
+pd.DataFrame(O3_rate_of_change_mass).to_csv("O3_rate_of_change_mass.csv")
+
+##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
+total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
+total_concentration_of_injected_components = open(total_concentration_of_injected_components_file_path, "r+")
+total_concentration_of_injected_components = total_concentration_of_injected_components.readlines()
+total_concentration_of_injected_components = pd.DataFrame([total_concentration_of_injected_components[i].split(",") for i in range(1,len(total_concentration_of_injected_components))])
+total_concentration_of_injected_components.to_csv('total_concentration_of_injected_components_mass.csv')
+
 
 # Combine species information
 species_information = pd.DataFrame({'Species':species, 
