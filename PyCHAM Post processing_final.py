@@ -14,6 +14,9 @@ radius = open(radius_file_path, "r+")
 radius = radius.readlines()
 radius_mm = pd.DataFrame([radius[i].split(",") for i in range(2, len(radius))])
 radius_mm.to_csv('Radius (mm).csv')
+radius = np.array(radius[2].split(","))
+radius[-1] = radius[-1][:-1]
+radius = radius.astype(np.float)
 
 ##### time
 time_path = r"time"
@@ -70,6 +73,10 @@ organic_alkoxy_radical_index[0] = organic_alkoxy_radical_index[0][1:len(organic_
 organic_alkoxy_radical_index[-1] = organic_alkoxy_radical_index[-1][0:len(organic_alkoxy_radical_index[-1])-2]
 # Convert to int
 organic_alkoxy_radical_index = [int(i) for i in organic_alkoxy_radical_index]
+
+#Extract size_bin_number and components_number
+bin_number = int(information[0].split(",")[1])
+components_number = int(information[1].split(",")[1])
 
 #Extract saturation vapor pressure at 298.15K of species
 saturation_vapor_pressure = information[13].split(",")
