@@ -170,7 +170,6 @@ total_concentration_of_injected_components.to_csv('total_concentration_of_inject
 # Combine species information
 species_information = pd.DataFrame({'Species':species, 
                                     'Molecular weight (g/mol)': molecular_weight, 
-                                    'O:C ratio': OCratio,
                                     'Saturation vapor pressure at 298.15K':saturation_vapor_pressure})
 organic_alkoxy_radical = [True if species_information.index[i] in organic_alkoxy_radical_index else False for i in range(len(species_information))]
 species_information['Alkoxy Radicals'] = organic_alkoxy_radical
