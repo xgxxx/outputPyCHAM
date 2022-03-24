@@ -12,8 +12,10 @@ os.chdir(path)
 radius_file_path = r"size_bin_radius"
 radius = open(radius_file_path, "r+")
 radius = radius.readlines()
-radius_mm = pd.DataFrame([radius[i].split(",") for i in range(2, len(radius))])
-radius_mm.to_csv('Radius (mm).csv')
+radius_mm = np.array([radius[i].split(",") for i in range(2, len(radius))]).astype(np.float)
+diameter_mm = radius_mm*2
+pd.DataFrame(diameter_mm).to_csv('Diameter (mm).csv')
+
 radius = np.array(radius[2].split(","))
 radius[-1] = radius[-1][:-1]
 radius = radius.astype(np.float)
