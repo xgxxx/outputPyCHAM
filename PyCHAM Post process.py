@@ -152,7 +152,7 @@ O3_rate_of_change = O3_rate_of_change.astype(float)
 O3_rate_of_change_number = O3_rate_of_change
 pd.DataFrame(O3_rate_of_change_number).to_csv("O3_rate_of_change_number.csv")
 
-# convert number concentration into mass concentration (unit: ug/m3)
+# convert number concentration into mass concentration (unit: ug/m3.s)
 factor_need = np.tile(factor[:1], len(O3_rate_of_change[0]))
 O3_rate_of_change_ppb = O3_rate_of_change / factor_need
 temp = np.tile(molecular_weight[:1], len(O3_rate_of_change_ppb))
