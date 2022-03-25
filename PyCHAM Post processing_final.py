@@ -153,11 +153,31 @@ pd.DataFrame(O3_rate_of_change_number).to_csv("O3_rate_of_change_number.csv")
 # convert number concentration into mass concentration (unit: ug/m3)
 factor_need = np.tile(factor[:1], len(O3_rate_of_change[0]))
 O3_rate_of_change_ppb = O3_rate_of_change / factor_need
-temp = np.tile(molecular_weight[:1], len(O3_rate_of_change_ppb))
+temp = np.tile(molecular_weight[1], len(O3_rate_of_change_ppb))
 temperature_need = np.tile(temperature[:1], len(O3_rate_of_change[0]))
 O3_rate_of_change_mass = O3_rate_of_change_ppb * 12.187 / temperature_need
 O3_rate_of_change_mass = (O3_rate_of_change_mass.transpose() * temp.transpose()).transpose()
 pd.DataFrame(O3_rate_of_change_mass).to_csv("O3_rate_of_change_mass.csv")
+
+##### OH_rate_of_change
+OH_rate_of_change_file_path = r"OH_rate_of_change"
+OH_rate_of_change = open(OH_rate_of_change_file_path, "r+")
+OH_rate_of_change = OH_rate_of_change.readlines()
+OH_rate_of_change = np.array([OH_rate_of_change[i].split(",") for i in range(1, len(OH_rate_of_change))])
+OH_rate_of_change = OH_rate_of_change.astype(float)
+
+# get OH_rate_of_change (number concentration, unit: molecules/cc.s (air))
+OH_rate_of_change_number = OH_rate_of_change
+pd.DataFrame(OH_rate_of_change_number).to_csv("OH_rate_of_change_number.csv")
+
+# convert number concentration into mass concentration (unit: ug/m3)
+factor_need = np.tile(factor[:1], len(OH_rate_of_change[0]))
+OH_rate_of_change_ppb = OH_rate_of_change / factor_need
+temp = np.tile(molecular_weight[7], len(OH_rate_of_change_ppb))
+temperature_need = np.tile(temperature[:1], len(OH_rate_of_change[0]))
+OH_rate_of_change_mass = OH_rate_of_change_ppb * 12.187 / temperature_need
+OH_rate_of_change_mass = (OH_rate_of_change_mass.transpose() * temp.transpose()).transpose()
+pd.DataFrame(OH_rate_of_change_mass).to_csv("OH_rate_of_change_mass.csv")
 
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
