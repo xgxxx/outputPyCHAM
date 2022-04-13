@@ -4,39 +4,41 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def compare(start_end, particulate_phase_mass, time, time_interval, file_name, observation_start_time):
-    if start_end==0:
-        ##### get needed length
-        length = int(time[-1] / time_interval)
-    else:
-        ##### get needed length
-        length = int((time[-1]-5) / time_interval)
-    ###calculate total SOA in all size bins (average, time_interval)
-    SOA_total = np.sum(particulate_phase_mass, axis=0)
-    SOA_total_average = np.zeros(length)
-    for i in range(length):
-        SOA_total_average[i] = np.mean(SOA_total[(start_end+1) + 10 * i:(start_end+1) + 10 * (i + 1)])
+def compare(smaller, length, start_time, end_time, time_column, particulate_phase_mass_SOA, time_interval, file_name, sheet):
+    # smaller: check if simulation start time is smaller than start time of observation, \
+    # if it is, smaller = 1, else smaller = 0
+    # length: number of data that need to be compared (due to the input file format)
+    # start_time: start time of observation, given by user
+    # end_time: end time of observation, given by user
+    # particulate_phase_mass_SOA: contains partitulate phase mass concentration\
+    # for each SOA component in each size bin and each time, given in post processing file
+    # time_interval: time interval of observation data,  given by user
+    # file_name: name of the file that contains observation data, given by user
+    # sheet: name of the sheet that contains observation data in the above file, given by user
 
-    ### extract from observation data
-    observation = pd.read_excel(file_name)
-    observation = observation.to_numpy()
-    observation = observation[2:, :9]
-    observation_need = observation[observation[:, 0] == observation_start_time]
-    observation_need = observation_need[0]
-    start = np.where((observation == observation_need).all(axis=1))[0][0]
-    SOA_observation_need = np.array([observation[start + i][3] + observation[start + i][5] + observation[start + i][7] for i in range(length)])
-    observation_time = np.array([observation[start + i][1] for i in range(length)])
+    ### extract obervation data
+    observation = pd.ExcelFile(file_name)
+    observation = observation.parse(sheet, skiprows=2)
+    observation = observation.loc[observation[time_column] >= start_time]
+    observation = observation.loc[observation[time_column] <= end_time]
+    observation = observation[:length]
+    observation_time = observation[time_column]
+    observation_data = observation["MOOOA"] + observation["LOOOA"] + observation["OOA"]
+    SOA_total = np.sum(particulate_phase_mass_SOA, axis=0)
+    SOA_total_average = []
+
+    if smaller == 1:
+        start = 5 - int(start_time[-5:-3])+1
+        SOA_total_average.append(np.mean(SOA_total[:start]))
+    else:
+        start = 1
+        SOA_total_average.append(' ')
+        
+    for i in range(length-1):
+        SOA_total_average.append(np.mean(SOA_total[start+i*time_interval:start+(i+1)*time_interval]))
 
     ###convert to csv and plot
-    comparison = pd.DataFrame({'simulation': SOA_total_average,
-                               'observation': SOA_observation_need})
-    comparison.to_csv("comparison between simulation and observation.csv")
-
-    plt.figure(1)
-    plt.plot(observation_time, SOA_total_average, 'r')  # red line is for simulation result
-    plt.plot(observation_time, SOA_observation_need, 'g')  # green line is for observation result
-    plt.title("comparison of simulation and observation(red:simulation; green:observation)")
-    plt.xlabel("time (min)")
-    plt.ylabel("SOA concentration (ug/m3)")
-    plt.savefig("comparison (simulation and observation)")
-
+    comparison = pd.DataFrame({'observation time': observation_time,
+                               'simulation (ug/m3)': SOA_total_average,
+                               'observation (ug/m3)': observation_data})
+    comparison.to_csv("comparison between simulation and observation1.csv")
