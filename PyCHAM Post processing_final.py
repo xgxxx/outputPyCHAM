@@ -8,21 +8,21 @@ import os
 path = r'C:\Users\janet\Documents\nBox\0. SOAFP-PyCHAM output\PR3_simulation\Simulation results\20Nov_1700_1759_89VOCs_20bins'
 os.chdir(path)
 
-##### Size bin radius
+##### Size bin radius (unit: um)
 radius_file_path = r"size_bin_radius"
 radius = open(radius_file_path, "r+")
 radius = radius.readlines()
 radius_mm = pd.DataFrame([radius[i].split(",") for i in range(2, len(radius))])
 radius_mm.to_csv('Radius (mm).csv')
-radius = np.array(radius[2].split(","))
-radius[-1] = radius[-1][:-1]
-radius = radius.astype(np.float)
+radius = [radius[i].split(",") for i in range(2, len(radius))]
+radius = np.array(radius).astype(float)
 
-##### time
+##### time (unit: min)
 time_path = r"time"
 time = open(time_path, "r+")
 time = time.readlines()
-time = np.array([float(time[i][:time[i].index('+') - 1]) * 10 ** int(time[i][time[i].index('+') + 1:-1]) / 60 for i in range(1, len(time))])
+time = [time[i] for i in range(1, len(time))]
+time = np.array([float(i)/60 for i in time])
 
 ##### Concentration information
 # Input filepath here #
@@ -78,6 +78,10 @@ organic_alkoxy_radical_index = [int(i) for i in organic_alkoxy_radical_index]
 bin_number = int(information[0].split(",")[1])
 components_number = int(information[1].split(",")[1])
 
+##### non SOA components
+nonSOA = ['core', 'H2O', 'AMMSUL']
+components_number_SOA = components_number-len(nonSOA)
+
 #Extract saturation vapor pressure at 298.15K of species
 saturation_vapor_pressure = information[13].split(",")
 saturation_vapor_pressure = saturation_vapor_pressure[1:len(saturation_vapor_pressure)]
@@ -104,15 +108,25 @@ rh = np.array(rh).transpose().astype(float)
 
 # Extract particulate phase concentration
 particulate_phase = concentration[concentration[:,1] != "g"]
+particulate_phase_SOA = particulate_phase
+for i in nonSOA:
+    particulate_phase_SOA = particulate_phase_SOA[particulate_phase_SOA[:, 0] != ' '+i]
+
 # Convert from molecules/cm3 to ppb
 particulate_phase_ppb = particulate_phase[:,2:particulate_phase.shape[1]]
+particulate_phase_ppb_SOA = particulate_phase_SOA[:,2:particulate_phase_SOA.shape[1]]
 particulate_phase_ppb = particulate_phase_ppb.astype(np.float)
+particulate_phase_ppb_SOA = particulate_phase_ppb_SOA.astype(np.float)
 particulate_phase_ppb = particulate_phase_ppb / factor
+particulate_phase_ppb_SOA = particulate_phase_ppb_SOA / factor
 # repeat molecular weight array by no. of times of size bins
 temp = np.tile(molecular_weight,int(len(particulate_phase_ppb)/len(molecular_weight)))
+temp_SOA = np.tile(molecular_weight_SOA, int(len(particulate_phase_ppb)/len(molecular_weight)))
 # Convert from ppb to ug/m3
 particulate_phase_mass = particulate_phase_ppb*12.187/temperature
+particulate_phase_mass_SOA = particulate_phase_ppb_SOA*12.187/temperature
 particulate_phase_mass = (particulate_phase_mass.transpose()*temp.transpose()).transpose()
+particulate_phase_mass_SOA = (particulate_phase_mass_SOA.transpose()*temp_SOA.transpose()).transpose()
 
 # total mass concentration (ug/m3) per species per size bin
 total_particulate_mass_species_sizebin = np.sum(particulate_phase_mass, axis=1)
