@@ -13,8 +13,8 @@ def SOA_insolation(time_interval, file_name, sheet, time_column, start_time, end
     # start_time: start of needed time, given by user
     # end_time: end of needed time, given by user
     # insolation_column: name of the column that includes insolation data, given by user
-    # particulate_phase_mass_SOA: given in main file, contains partitulate phase mass concentration\
-    # for each SOA component in each size bin and each time
+    # particulate_phase_mass_SOA: contains partitulate phase mass concentration\
+    # for each SOA component in each size bin and each time, given in post processing file
 
 
     ### get insolation information (remove the data at t=0)
