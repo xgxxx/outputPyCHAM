@@ -5,31 +5,38 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def SOA_insolation(time, time_interval, file_name, sheet, start_time, particulate_phase_mass):
-    ##### get needed length
-    length = int(time[-1] / time_interval)
+def SOA_insolation(time_interval, file_name, sheet, time_column, start_time, end_time, insolation_column, particulate_phase_mass_SOA):
+    # time_interval: time interval of observed data, given by user
+    # file_name: name of the file that contains insolation data, given by user
+    # sheet: name of the sheet that contains insolation data in the above file, given by user
+    # time_column: name of the column that includes detailed observation time, given by user
+    # start_time: start of needed time, given by user
+    # end_time: end of needed time, given by user
+    # insolation_column: name of the column that includes insolation data, given by user
+    # particulate_phase_mass_SOA: given in main file, contains partitulate phase mass concentration\
+    # for each SOA component in each size bin and each time
 
-    ### get solar information (remove the data at t=0)
+
+    ### get insolation information (remove the data at t=0)
     insolation = pd.ExcelFile(file_name)
     insolation = insolation.parse(sheet)
+    insolation = insolation.loc[insolation[time_column] > start_time]
+    insolation = insolation.loc[insolation[time_column] <= end_time]
+    insolation = insolation[insolation_column]
     insolation = insolation.to_numpy()
-    insolation_need = insolation[insolation[:, 3] == pd.Timestamp(start_time)]
-    ref = np.array([True, True, True, True, True, True, True, True, True, True, True, True, True, False])
-    ref2 = (insolation == insolation_need[0])
-    start = np.where((ref2 == ref).all(axis=1))[0][0]
-    solar = np.array([insolation[start + i + 1][11] for i in range(length)])
+
 
     ###calculate total SOA in all size bins
-    SOA_total = np.sum(particulate_phase_mass, axis=0)
-    SOA_total_interval = np.zeros(length)
-    for i in range(length):
-        SOA_total_interval[i] = SOA_total[time_interval * (i+1)]
-
+    SOA_total = np.sum(particulate_phase_mass_SOA, axis=0)
+    SOA_total_interval = np.zeros(len(insolation))
+    for i in range(len(insolation)):
+        SOA_total_interval[i] = np.mean(SOA_total[1+time_interval*i:1+time_interval*(i+1)])
     ###scatter plot and save
     plt.figure(1)
-    plt.scatter(solar, SOA_total_interval)
-    plt.xlabel("Solar Radiation (W/m2)")
-    plt.ylabel("SOA concentration (ug/m3)")
-    plt.title("SOA temporal trends (time interval: " + str(time_interval) + " min)")
+    plt.scatter(insolation, SOA_total_interval)
+    plt.xlabel("Solar Radiation (W/m\u00b2)")
+    plt.ylabel("SOA concentration (\u03BCg/m\u00b3)")
+    plt.title("SOA temporal trends (time interval: " + str(time_interval) + " minutes)")
+    plt.show()
     plt.savefig("SOA temporal trends-Solar radiation")
 
