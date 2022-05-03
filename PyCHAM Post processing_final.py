@@ -313,11 +313,36 @@ total_concentration_of_injected_components = total_concentration_of_injected_com
 total_concentration_of_injected_components = np.array([total_concentration_of_injected_components[i].split(",") for i in range(1,len(total_concentration_of_injected_components))])
 pd.DataFrame(total_concentration_of_injected_components).to_csv("total_concentration_of_injected_components (\u03BCg.m\u207B\u00b3).csv")
 
+# O/C ratio
+OCratio = information[7][8:-2].split(", ")
+for i in range(len(OCratio)):
+    o = OCratio[i].count('O')
+    c = OCratio[i].count('C') + OCratio[i].count('c')
+    OCratio[i] = o / c if c != 0 else 'no C'
+OCratio = OCratio + [' '] + [' ']
+
+
+# H/C ratio
+HCratio = information[7][8:-2].split(", ")
+for i in range(len(HCratio)):
+    my_smiles_string = HCratio[i][1:-1]
+    my_mol = Chem.MolFromSmiles(my_smiles_string)
+    try:
+        Chem.AddHs(my_mol)
+    except:
+        HCratio[i] = 'error'
+    else:
+        my_mol_with_explicit_h = Chem.AddHs(my_mol)
+        h = my_mol_with_explicit_h.GetNumAtoms() - my_mol_with_explicit_h.GetNumHeavyAtoms()
+        c = my_smiles_string.count('C') + my_smiles_string.count('c')
+        HCratio[i] = h / c if c != 0 else 'no C'
+HCratio = HCratio + [' '] + [' ']
 
 # Combine species information
 species_information = pd.DataFrame({'Species':species, 
                                     'Molecular weight (g/mol)': molecular_weight, 
                                     'O:C ratio': OCratio,
+                                    'H:C ratio': HCratio,
                                     'Saturation vapor pressure at 298.15K':saturation_vapor_pressure})
 organic_alkoxy_radical = [True if species_information.index[i] in organic_alkoxy_radical_index else False for i in range(len(species_information))]
 species_information['Alkoxy Radicals'] = organic_alkoxy_radical
