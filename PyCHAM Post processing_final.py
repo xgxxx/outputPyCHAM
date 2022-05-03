@@ -99,6 +99,15 @@ saturation_vapor_pressure[-1] = saturation_vapor_pressure[-1][0:len(saturation_v
 # Convert to int
 saturation_vapor_pressure = [float(i) for i in saturation_vapor_pressure]
 
+# Read chamber environment temperature
+environment = open(chamber_environment_file_path, "r+")
+environment = environment.readlines()
+environment = environment[1:len(environment)]
+temperature = [environment[i].split(",")[0] for i in range(len(environment))]
+temperature = np.array(temperature).transpose().astype(float)
+rh = [environment[i].split(",")[2] for i in range(len(environment))]
+rh = np.array(rh).transpose().astype(float)
+
 # Extract gas phase concentration (ppb)
 gas_phase = concentration[concentration[:,1] == "g"]
 gas_phase[0,0] = gas_phase[0,0][2:]
@@ -148,15 +157,6 @@ pd.DataFrame(gas_phase_mass_nonSOA).to_csv("gas_phase_mass_nonSOA (\u03BCg.m\u20
 
 # species corresponding to molecular weight
 species = gas_phase[0:(len(gas_phase)),0].tolist()
-
-# Read chamber environment temperature
-environment = open(chamber_environment_file_path, "r+")
-environment = environment.readlines()
-environment = environment[1:len(environment)]
-temperature = [environment[i].split(",")[0] for i in range(len(environment))]
-temperature = np.array(temperature).transpose().astype(float)
-rh = [environment[i].split(",")[2] for i in range(len(environment))]
-rh = np.array(rh).transpose().astype(float)
 
 # Extract particulate phase concentration (molecules/cm3)
 particulate_phase = concentration[concentration[:,1] != "g"]
