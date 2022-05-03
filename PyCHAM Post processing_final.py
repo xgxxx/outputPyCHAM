@@ -205,8 +205,7 @@ for i in range(len(tracked_comp)):
 
     # ppb
     rate_of_change_ppb = rate_of_change
-    for k in range(1,len(rate_of_change_ppb)):
-        rate_of_change_ppb[k] = np.divide(rate_of_change_ppb[k], np.tile(factor[k-1],(1,len(rate_of_change_ppb[k]))))
+    rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[1:]).transpose()
     pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv")
 
     # mass concentration, unit: ug/m3
