@@ -208,7 +208,27 @@ pd.DataFrame(total_particulate_mass_species_sizebin_nonSOA).to_csv('perSpecies_p
 
 ### total mass concentration (ug/m3) per species
 total_particulate_mass_species = np.sum(total_particulate_mass_species_sizebin, axis = 1)
-# total mass concentration (ug/m3) per species per time
+# total mass concentration (ug/m3) per species for all components
+total_particulate_mass_species_all = particulate_phase[:components_number, :2]
+for i in range(components_number):
+    total_particulate_mass_species_all[i] = np.concatenate((particulate_phase[i][:1], [total_particulate_mass_species[i]]))
+col_name = np.array([['Species', ' ']])
+total_particulate_mass_species_all = np.vstack((col_name, total_particulate_mass_species_all))
+pd.DataFrame(total_particulate_mass_species_all).to_csv('perSpecies_all (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species for SOA components
+total_particulate_mass_species_SOA = total_particulate_mass_species_all
+for i in nonSOA:
+    total_particulate_mass_species_SOA = total_particulate_mass_species_SOA[total_particulate_mass_species_SOA[:, 0] != ' '+i]
+pd.DataFrame(total_particulate_mass_species_SOA).to_csv('perSpecies_SOA (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species for nonSOA components
+total_particulate_mass_species_nonSOA = np.array([i for i in total_particulate_mass_species_all if i[0][1:] in nonSOA])
+col_name = np.array([['Species', ' ']])
+total_particulate_mass_species_nonSOA = np.vstack((col_name, total_particulate_mass_species_nonSOA))
+pd.DataFrame(total_particulate_mass_species_nonSOA).to_csv('perSpecies_nonSOA (\u03BCg.m\u207B\u00b3).csv')
+
+### total mass concentration (ug/m3) per species per time
 total_particulate_mass_species_time = np.array_split(particulate_phase_mass, int(len(particulate_phase_ppb)/len(molecular_weight)))
 total = np.zeros(shape=(len(molecular_weight),len(environment)))
 for items in total_particulate_mass_species_time:
@@ -286,11 +306,6 @@ organic_peroxy_radical = [True if species_information.index[i] in organic_peroxy
 species_information['Peroxy Radicals'] = organic_peroxy_radical
 species_information.to_csv('species_information.csv')
 
-# Total particulate mass per species per size bins
-perSpecies_perSizebin = pd.concat([pd.DataFrame(species), 
-                                  pd.DataFrame(total_particulate_mass_species_sizebin)], 
-                                  axis=1)
-perSpecies_perSizebin.to_csv('perSpecies_perSizebin.csv')
                                  
 # Total particulate mass per species per time
 perSpecies_perTime = pd.concat([pd.DataFrame(species), 
