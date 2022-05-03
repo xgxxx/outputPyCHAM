@@ -5,12 +5,12 @@ import pandas as pd
 from math import pi
 
 
-def surface_for_each_component(radius, components_number, particulate_phase):
-    # radius: radius of each size bin at each time, extracted from PyCHAM output size_bin_radius file, \
+def surface_for_each_component(radius_um, components_number, particulate_phase):
+    # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
     # given in post processing file
     # components_number: number of components, given in post processing file
-    # particulate_phase: includes mass concentration corresponding to each component's name \
-    # in each size bin at each time, given in post processing file
+    # particulate_phase: mass concentration corresponding to each component \
+    # in each size bin at each time (ug/m3), given in post processing file
 
     surface = particulate_phase
     for component in range(len(particulate_phase)):
@@ -20,20 +20,20 @@ def surface_for_each_component(radius, components_number, particulate_phase):
             if times >= 2:
                 # calculate by given formula, need to transpose radius, and multiply radius by 2 to convert to diameter
                 surface[component][times] = (float(particulate_phase[component][times])) * pi * (
-                            radius.transpose()[int(component / components_number)][times-2] * 2) ** 2
+                            radius_um.transpose()[int(component / components_number)][times-2] * 2) ** 2
 
     # col_name: name of each column
     col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
     surface = np.vstack((col_name, surface))
     pd.DataFrame(surface).to_csv('surface_for_each_component.csv')
+surface_for_each_component(radius, 1936, particulate_phase)
 
-
-def surface_for_total(radius, bin_number, components_number_SOA, particulate_phase_SOA):
-    # radius: radius of each size bin at each time, extracted from PyCHAM output size_bin_radius file, \
+def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particulate_phase_SOA):
+    # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
     # given in post processing file
     # components_number_SOA: number of SOA components, given in post processing file
-    # particulate_phase_mass_SOA: contains partitulate phase mass concentration\
-    # for each SOA component in each size bin and each time, given in post processing file
+    # particulate_phase_mass_SOA: partitulate phase mass concentration (ug/m3)\
+    # for each SOA component per size bin and per time, given in post processing file
 
     # exclude first 2 columns which contains component's name and size bin number
     pp_SOA = particulate_phase_SOA[:, 2:particulate_phase_SOA.shape[1]]
@@ -52,6 +52,8 @@ def surface_for_total(radius, bin_number, components_number_SOA, particulate_pha
 
         for times in range(len(time)):
             bin_surface.append((temp_sum[times]) * pi * (
-                            radius.transpose()[bins][times] * 2) ** 2)
+                            radius_um.transpose()[bins][times] * 2) ** 2)
         surface.append(bin_surface)
     pd.DataFrame(surface).to_csv('surface_for_total.csv')
+
+surface_for_SOA_total(radius, 41, 1934, particulate_phase_SOA)
