@@ -325,18 +325,6 @@ organic_peroxy_radical = [True if species_information.index[i] in organic_peroxy
 species_information['Peroxy Radicals'] = organic_peroxy_radical
 species_information.to_csv('species_information.csv')
 
-#size distribution SOA mass
-particulate_phase_mass_df = pd.DataFrame(particulate_phase_mass)
-particulate_phase_mass_df['Species'] = particulate_phase[0:particulate_phase.shape[0],0]
-particulate_phase_mass_df['Size'] = particulate_phase[0:particulate_phase.shape[0],1]
-#GroupBySize = particulate_phase_mass_df.groupby('Size')
-#SizeMass = GroupBySize.sum()
-#pd.DataFrame(SizeMass).to_csv('SOAsizemass.csv')
-df = particulate_phase_mass_df[particulate_phase_mass_df.Species != ' core']
-df = df[df.Species != ' H2O']
-df = df[df.Species != ' AMMSUL']
-pd.DataFrame(df).to_csv('SOAsizemass.csv')
-
 #Other files
 pd.DataFrame(gas_phase).to_csv('gas_phase.csv')
 pd.DataFrame(concentration).to_csv("concentration_raw.csv")
