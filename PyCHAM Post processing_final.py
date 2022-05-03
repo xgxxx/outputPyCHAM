@@ -175,45 +175,44 @@ particle_number_concentration_wet = particle_number_concentration_wet.readlines(
 particle_number_concentration_wet= pd.DataFrame([particle_number_concentration_wet[i].split(",") for i in range(2, len(particle_number_concentration_wet))])
 particle_number_concentration_wet.to_csv('particle_number_concentration_wet_number.csv')
 
-##### O3_rate_of_change
-O3_rate_of_change_file_path = r"O3_rate_of_change"
-O3_rate_of_change = open(O3_rate_of_change_file_path, "r+")
-O3_rate_of_change = O3_rate_of_change.readlines()
-O3_rate_of_change = np.array([O3_rate_of_change[i].split(",") for i in range(1, len(O3_rate_of_change))])
-O3_rate_of_change = O3_rate_of_change.astype(float)
+### Get information of tracked components
+# get tracked components' names
+model_variable_path = r"Model variable.txt"
+model_variable = open(model_variable_path, "r+")
+model_variable = model_variable.readlines()
+model_variable = np.array([model_variable[i].split("=") for i in range(1, len(model_variable))])
+tracked_comp = model_variable[model_variable[:,0] == "tracked_comp "]
+tracked_comp = tracked_comp[0][1].split(", ")
+tracked_comp[0] = tracked_comp[0][1:]
+tracked_comp[-1] = tracked_comp[-1][:-1]
+# get tracked components' indices
+tracked_comp_index = [components.index(i) for i in tracked_comp if i in components]
+# get tracked components' molecular weights
+tracked_comp_weight = [molecular_weight[i] for i in tracked_comp_index]
 
-# get O3_rate_of_change (number concentration, unit: molecules/cc.s (air))
-O3_rate_of_change_number = O3_rate_of_change
-pd.DataFrame(O3_rate_of_change_number).to_csv("O3_rate_of_change_number.csv")
+for i in range(len(tracked_comp)):
+    rate_of_change_file_path = tracked_comp[i] + "_rate_of_change"
+    rate_of_change = open(rate_of_change_file_path, "r+")
+    rate_of_change = rate_of_change.readlines()
+    rate_of_change = np.array([rate_of_change[i].split(",") for i in range(1, len(rate_of_change))])
+    rate_of_change = rate_of_change.astype(float)
+    for j in range(len(rate_of_change[0])):
+        rate_of_change[0][j] = rate_of_change[0][j] + 1
 
-# convert number concentration into mass concentration (unit: ug/m3)
-factor_need = np.tile(factor[:1], len(O3_rate_of_change[0]))
-O3_rate_of_change_ppb = O3_rate_of_change / factor_need
-temp = np.tile(molecular_weight[1], len(O3_rate_of_change_ppb))
-temperature_need = np.tile(temperature[:1], len(O3_rate_of_change[0]))
-O3_rate_of_change_mass = O3_rate_of_change_ppb * 12.187 / temperature_need
-O3_rate_of_change_mass = (O3_rate_of_change_mass.transpose() * temp.transpose()).transpose()
-pd.DataFrame(O3_rate_of_change_mass).to_csv("O3_rate_of_change_mass.csv")
+    # number concentration, unit: molecules/cc.s (air)
+    rate_of_change_number = rate_of_change
+    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+"_rate_of_change_(molecules.(cc.s (air)).\u207B\u00b9).csv")
 
-##### OH_rate_of_change
-OH_rate_of_change_file_path = r"OH_rate_of_change"
-OH_rate_of_change = open(OH_rate_of_change_file_path, "r+")
-OH_rate_of_change = OH_rate_of_change.readlines()
-OH_rate_of_change = np.array([OH_rate_of_change[i].split(",") for i in range(1, len(OH_rate_of_change))])
-OH_rate_of_change = OH_rate_of_change.astype(float)
+    # ppb
+    rate_of_change_ppb = rate_of_change
+    rate_of_change_ppb[1:] = rate_of_change_ppb[1:] / factor[0]
+    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv")
 
-# get OH_rate_of_change (number concentration, unit: molecules/cc.s (air))
-OH_rate_of_change_number = OH_rate_of_change
-pd.DataFrame(OH_rate_of_change_number).to_csv("OH_rate_of_change_number.csv")
-
-# convert number concentration into mass concentration (unit: ug/m3)
-factor_need = np.tile(factor[:1], len(OH_rate_of_change[0]))
-OH_rate_of_change_ppb = OH_rate_of_change / factor_need
-temp = np.tile(molecular_weight[7], len(OH_rate_of_change_ppb))
-temperature_need = np.tile(temperature[:1], len(OH_rate_of_change[0]))
-OH_rate_of_change_mass = OH_rate_of_change_ppb * 12.187 / temperature_need
-OH_rate_of_change_mass = (OH_rate_of_change_mass.transpose() * temp.transpose()).transpose()
-pd.DataFrame(OH_rate_of_change_mass).to_csv("OH_rate_of_change_mass.csv")
+    # mass concentration, unit: ug/m3
+    temperature_new = np.tile(temperature[0], (len(rate_of_change) - 1, len(rate_of_change[0])))
+    rate_of_change_mass = rate_of_change_ppb
+    rate_of_change_mass[1:] = rate_of_change_mass[1:] * 12.187 / temperature_new * tracked_comp_weight[0]
+    pd.DataFrame(rate_of_change_mass).to_csv(tracked_comp[i]+"_rate_of_change (\u03BCg.m\u207B\u00b3).csv")
 
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
