@@ -7,10 +7,10 @@ from math import pi
 
 def surface_for_each_component(radius_um, components_number, particulate_phase):
     # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
-    # given in post processing file
+    # given in post processing file (e.g. 2.155903426506518283e-03 um)
     # components_number: number of components, given in post processing file
     # particulate_phase: mass concentration corresponding to each component \
-    # in each size bin at each time (ug/m3), given in post processing file
+    # in each size bin at each time (ug/m3), given in post processing file (e.g. 7.460121947903269492e-09ug/m3)
 
     surface = particulate_phase
     for component in range(len(particulate_phase)):
@@ -26,14 +26,13 @@ def surface_for_each_component(radius_um, components_number, particulate_phase):
     col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
     surface = np.vstack((col_name, surface))
     pd.DataFrame(surface).to_csv('surface_for_each_component.csv')
-surface_for_each_component(radius, 1936, particulate_phase)
 
 def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particulate_phase_SOA):
     # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
-    # given in post processing file
+    # given in post processing file (e.g. 2.155903426506518283e-03 um)
     # components_number_SOA: number of SOA components, given in post processing file
-    # particulate_phase_mass_SOA: partitulate phase mass concentration (ug/m3)\
-    # for each SOA component per size bin and per time, given in post processing file
+    # particulate_phase_mass_SOA: partitulate phase mass concentration (ug/m3) for each \
+    # SOA component per size bin and per time, given in post processing file (e.g. 7.460121947903269492e-09ug/m3)
 
     # exclude first 2 columns which contains component's name and size bin number
     pp_SOA = particulate_phase_SOA[:, 2:particulate_phase_SOA.shape[1]]
@@ -55,5 +54,3 @@ def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particul
                             radius_um.transpose()[bins][times] * 2) ** 2)
         surface.append(bin_surface)
     pd.DataFrame(surface).to_csv('surface_for_total.csv')
-
-surface_for_SOA_total(radius, 41, 1934, particulate_phase_SOA)
