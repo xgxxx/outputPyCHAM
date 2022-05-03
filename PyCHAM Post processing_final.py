@@ -158,6 +158,30 @@ pd.DataFrame(particulate_phase_ppb_all).to_csv("particulate_phase_all (ppb).csv"
 pd.DataFrame(particulate_phase_ppb_SOA).to_csv("particulate_phase_SOA (ppb).csv")
 pd.DataFrame(particulate_phase_ppb_nonSOA).to_csv("particulate_phase_nonSOA (ppb).csv")
 
+# repeat molecular weight array by no. of times of size bins
+temp = np.tile(molecular_weight, int(len(particulate_phase_ppb) / len(molecular_weight)))
+# Convert from ppb to ug/m3
+particulate_phase_mass = particulate_phase_ppb * 12.187 / temperature
+particulate_phase_mass = (particulate_phase_mass.transpose() * temp.transpose()).transpose()
+
+particulate_phase_mass_all = particulate_phase
+for i in range(len(particulate_phase)):
+    particulate_phase_mass_all[i] = np.concatenate((particulate_phase[i][:2], particulate_phase_mass[i]))
+col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
+particulate_phase_mass_all = np.vstack((col_name, particulate_phase_mass_all))
+
+particulate_phase_mass_SOA = particulate_phase_mass_all
+for i in nonSOA:
+    particulate_phase_mass_SOA = particulate_phase_mass_SOA[particulate_phase_mass_SOA[:, 0] != ' '+i]
+
+particulate_phase_mass_nonSOA = np.array([i for i in particulate_phase_mass_all if i[0][1:] in nonSOA])
+col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
+particulate_phase_mass_nonSOA = np.vstack((col_name, particulate_phase_mass_nonSOA))
+
+pd.DataFrame(particulate_phase_mass_all).to_csv("particulate_phase_all (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(particulate_phase_mass_SOA).to_csv("particulate_phase_SOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(particulate_phase_mass_nonSOA).to_csv("particulate_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
+
 # total mass concentration (ug/m3) per species per size bin
 total_particulate_mass_species_sizebin = np.sum(particulate_phase_mass, axis=1)
 total_particulate_mass_species_sizebin = total_particulate_mass_species_sizebin.reshape(int(len(particulate_phase_ppb)/len(molecular_weight)),len(molecular_weight)).transpose()
