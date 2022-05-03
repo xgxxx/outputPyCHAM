@@ -182,10 +182,31 @@ pd.DataFrame(particulate_phase_mass_all).to_csv("particulate_phase_all (\u03BCg.
 pd.DataFrame(particulate_phase_mass_SOA).to_csv("particulate_phase_SOA (\u03BCg.m\u207B\u00b3).csv")
 pd.DataFrame(particulate_phase_mass_nonSOA).to_csv("particulate_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
 
-# total mass concentration (ug/m3) per species per size bin
+### total mass concentration (ug/m3) per species per size bin
+# total mass concentration (ug/m3) per species per size bin for all components
 total_particulate_mass_species_sizebin = np.sum(particulate_phase_mass, axis=1)
-total_particulate_mass_species_sizebin = total_particulate_mass_species_sizebin.reshape(int(len(particulate_phase_ppb)/len(molecular_weight)),len(molecular_weight)).transpose()
-# total mass concentration (ug/m3) per species
+total_particulate_mass_species_sizebin = total_particulate_mass_species_sizebin.reshape(bin_number,components_number).transpose()
+total_particulate_mass_species_sizebin_all = particulate_phase[:components_number]
+total_particulate_mass_species_sizebin_all = total_particulate_mass_species_sizebin_all[:,:bin_number+1]
+for i in range(components_number):
+    total_particulate_mass_species_sizebin_all[i] = np.concatenate((particulate_phase[i][:1], total_particulate_mass_species_sizebin[i]))
+col_name = np.array([['Species']+['p '+str(i+1) for i in range(bin_number)]])
+total_particulate_mass_species_sizebin_all = np.vstack((col_name, total_particulate_mass_species_sizebin_all))
+pd.DataFrame(total_particulate_mass_species_sizebin_all).to_csv('perSpecies_perSizebin_all (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species per size bin for SOA components
+total_particulate_mass_species_sizebin_SOA = total_particulate_mass_species_sizebin_all
+for i in nonSOA:
+    total_particulate_mass_species_sizebin_SOA = total_particulate_mass_species_sizebin_SOA[total_particulate_mass_species_sizebin_SOA[:, 0] != ' '+i]
+pd.DataFrame(total_particulate_mass_species_sizebin_SOA).to_csv('perSpecies_perSizebin_SOA (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species per size bin for nonSOA components
+total_particulate_mass_species_sizebin_nonSOA = np.array([i for i in total_particulate_mass_species_sizebin_all if i[0][1:] in nonSOA])
+col_name = np.array([['Species']+['p '+str(i+1) for i in range(bin_number)]])
+total_particulate_mass_species_sizebin_nonSOA = np.vstack((col_name, total_particulate_mass_species_sizebin_nonSOA))
+pd.DataFrame(total_particulate_mass_species_sizebin_nonSOA).to_csv('perSpecies_perSizebin_nonSOA (\u03BCg.m\u207B\u00b3).csv')
+
+### total mass concentration (ug/m3) per species
 total_particulate_mass_species = np.sum(total_particulate_mass_species_sizebin, axis = 1)
 # total mass concentration (ug/m3) per species per time
 total_particulate_mass_species_time = np.array_split(particulate_phase_mass, int(len(particulate_phase_ppb)/len(molecular_weight)))
