@@ -218,8 +218,8 @@ for i in range(len(tracked_comp)):
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
 total_concentration_of_injected_components = open(total_concentration_of_injected_components_file_path, "r+")
 total_concentration_of_injected_components = total_concentration_of_injected_components.readlines()
-total_concentration_of_injected_components = pd.DataFrame([total_concentration_of_injected_components[i].split(",") for i in range(1,len(total_concentration_of_injected_components))])
-total_concentration_of_injected_components.to_csv('total_concentration_of_injected_components_mass.csv')
+total_concentration_of_injected_components = np.array([total_concentration_of_injected_components[i].split(",") for i in range(1,len(total_concentration_of_injected_components))])
+pd.DataFrame(total_concentration_of_injected_components).to_csv("total_concentration_of_injected_components (\u03BCg.m\u207B\u00b3).csv")
 
 
 # Combine species information
