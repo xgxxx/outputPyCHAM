@@ -103,6 +103,24 @@ saturation_vapor_pressure = [float(i) for i in saturation_vapor_pressure]
 gas_phase = concentration[concentration[:,1] == "g"]
 gas_phase[0,0] = gas_phase[0,0][2:]
 
+# gas phase concentration for all components (ppb)
+gas_phase_all = gas_phase
+col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
+gas_phase_all = np.vstack((col_name, gas_phase_all))
+pd.DataFrame(gas_phase_all).to_csv("gas_phase_all (ppb).csv")
+
+# gas phase concentration for SOA components (ppb)
+gas_phase_SOA = gas_phase_all
+for i in nonSOA:
+    gas_phase_SOA = gas_phase_SOA[gas_phase_SOA[:, 0] != ' '+i]
+pd.DataFrame(gas_phase_SOA).to_csv("gas_phase_SOA (ppb).csv")
+
+# gas phase concentration for nonSOA components (ppb)
+gas_phase_nonSOA = np.array([i for i in gas_phase_all if i[0][1:] in nonSOA])
+col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
+gas_phase_nonSOA = np.vstack((col_name, gas_phase_nonSOA))
+pd.DataFrame(gas_phase_nonSOA).to_csv("gas_phase_nonSOA (ppb).csv")
+
 # species corresponding to molecular weight
 species = gas_phase[0:(len(gas_phase)),0].tolist()
 
