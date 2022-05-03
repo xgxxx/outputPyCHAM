@@ -229,10 +229,29 @@ total_particulate_mass_species_nonSOA = np.vstack((col_name, total_particulate_m
 pd.DataFrame(total_particulate_mass_species_nonSOA).to_csv('perSpecies_nonSOA (\u03BCg.m\u207B\u00b3).csv')
 
 ### total mass concentration (ug/m3) per species per time
-total_particulate_mass_species_time = np.array_split(particulate_phase_mass, int(len(particulate_phase_ppb)/len(molecular_weight)))
-total = np.zeros(shape=(len(molecular_weight),len(environment)))
+total_particulate_mass_species_time = np.array_split(particulate_phase_mass, bin_number)
+# total mass concentration (ug/m3) per species per time for all components
+total = np.zeros(shape=(components_number, len(time)))
 for items in total_particulate_mass_species_time:
     total = total + items
+total_particulate_mass_species_time_all = particulate_phase[:components_number, :-1]
+for i in range(components_number):
+    total_particulate_mass_species_time_all[i] = np.concatenate((particulate_phase[i][:1], total[i]))
+col_name = np.array([[' ']+[str(i)+' minute' for i in range(len(time))]])
+total_particulate_mass_species_time_all = np.vstack((col_name, total_particulate_mass_species_time_all))
+pd.DataFrame(total_particulate_mass_species_time_all).to_csv('perSpecies_perTime_all (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species per time for SOA components
+total_particulate_mass_species_time_SOA = total_particulate_mass_species_time_all
+for i in nonSOA:
+    total_particulate_mass_species_time_SOA = total_particulate_mass_species_time_SOA[total_particulate_mass_species_time_SOA[:, 0] != ' '+i]
+pd.DataFrame(total_particulate_mass_species_time_SOA).to_csv('perSpecies_perTime_SOA (\u03BCg.m\u207B\u00b3).csv')
+
+# total mass concentration (ug/m3) per species per time for nonSOA components
+total_particulate_mass_species_time_nonSOA = np.array([i for i in total_particulate_mass_species_time_all if i[0][1:] in nonSOA])
+col_name = np.array([[' ']+[str(i)+' minute' for i in range(len(time))]])
+total_particulate_mass_species_time_nonSOA = np.vstack((col_name, total_particulate_mass_species_time_nonSOA))
+pd.DataFrame(total_particulate_mass_species_time_nonSOA).to_csv('perSpecies_perTime_nonSOA (\u03BCg.m\u207B\u00b3).csv')
 
 ##### particle_number_concentration_dry_number
 particle_number_concentration_dry_file_path = r"particle_number_concentration_dry"
@@ -305,13 +324,6 @@ species_information['Alkoxy Radicals'] = organic_alkoxy_radical
 organic_peroxy_radical = [True if species_information.index[i] in organic_peroxy_radical_index else False for i in range(len(species_information))]
 species_information['Peroxy Radicals'] = organic_peroxy_radical
 species_information.to_csv('species_information.csv')
-
-                                 
-# Total particulate mass per species per time
-perSpecies_perTime = pd.concat([pd.DataFrame(species), 
-                                  pd.DataFrame(total)], 
-                                  axis=1)
-perSpecies_perTime.to_csv('perSpecies_perTime.csv')
 
 #size distribution SOA mass
 particulate_phase_mass_df = pd.DataFrame(particulate_phase_mass)
