@@ -183,9 +183,9 @@ pd.DataFrame(particulate_phase_mass_SOA).to_csv("particulate_phase_SOA (\u03BCg.
 pd.DataFrame(particulate_phase_mass_nonSOA).to_csv("particulate_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
 
 ### total mass concentration (ug/m3) per species per size bin
-# total mass concentration (ug/m3) per species per size bin for all components
 total_particulate_mass_species_sizebin = np.sum(particulate_phase_mass, axis=1)
 total_particulate_mass_species_sizebin = total_particulate_mass_species_sizebin.reshape(bin_number,components_number).transpose()
+# total mass concentration (ug/m3) per species per size bin for all components
 total_particulate_mass_species_sizebin_all = particulate_phase[:components_number]
 total_particulate_mass_species_sizebin_all = total_particulate_mass_species_sizebin_all[:,:bin_number+1]
 for i in range(components_number):
