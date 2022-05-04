@@ -141,19 +141,19 @@ for i in range(len(gas_phase_mass_all)):
     gas_phase_mass_all[i] = np.concatenate((gas_phase_mass_all[i][:2], gas_phase_mass[i]))
 col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
 gas_phase_mass_all = np.vstack((col_name, gas_phase_mass_all))
-pd.DataFrame(gas_phase_mass_all).to_csv("gas_phase_mass_all (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_all).to_csv("gas_phase_all (\u03BCg.m\u207B\u00b3).csv")
 
 # Gas phase concentration (ug/m3) for SOA components
 gas_phase_mass_SOA = gas_phase_mass_all
 for i in nonSOA:
     gas_phase_mass_SOA = gas_phase_mass_SOA[gas_phase_mass_SOA[:, 0] != ' '+i]
-pd.DataFrame(gas_phase_mass_SOA).to_csv("gas_phase_mass_SOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_SOA).to_csv("gas_phase_SOA (\u03BCg.m\u207B\u00b3).csv")
 
 # Gas phase concentration (ug/m3) for nonSOA components
 gas_phase_mass_nonSOA = np.array([i for i in gas_phase_mass_all if i[0][1:] in nonSOA])
 col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
 gas_phase_mass_nonSOA = np.vstack((col_name, gas_phase_mass_nonSOA))
-pd.DataFrame(gas_phase_mass_nonSOA).to_csv("gas_phase_mass_nonSOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_nonSOA).to_csv("gas_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
 
 # species corresponding to molecular weight
 species = gas_phase[0:(len(gas_phase)),0].tolist()
