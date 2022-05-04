@@ -5,12 +5,14 @@ import matplotlib.pyplot as plt
 
 
 def contour_SOA(time, bin_number, components_number_SOA, particulate_phase_mass_SOA, resolution):
-    # time: given in post processing file, which is extracted from PyCHAM output time file
+    # time: time record of simulation (unit: minute), given in post processing file, \
+    # which is extracted from PyCHAM output time file
     # bin_number: number of size bins, given in post processing file
     # components_number_SOA: number of SOA components, given in post processing file
-    # particulate_phase_mass_SOA: contains partitulate phase mass concentration\
-    # for each SOA component in each size bin and each time, given in post processing file
-    # resolution: determine number of lines in contour plot, given by user
+    # particulate_phase_mass_SOA: contains partitulate phase mass concentration (unit: ug/m3) for each SOA component \
+    # in each size bin and each time, given in post processing file (e.g. 6.752614986953e-26 ug/m3)
+    # resolution: determine number of lines in contour plot and intervals of color bar, \
+    # corresponding to parameter 'levels' in 'plt.contourf', given by user
 
     ###x: time (unit:min)
     x = time
