@@ -4,38 +4,38 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def compare(smaller, length, start_time, end_time, time_column, particulate_phase_mass_SOA, time_interval, file_name, sheet):
-    # smaller: check if simulation start time is smaller than start time of observation, \
-    # if it is, smaller = 1, else smaller = 0
-    # length: number of data that need to be compared (due to the input file format)
-    # start_time: start time of observation, given by user
-    # end_time: end time of observation, given by user
-    # particulate_phase_mass_SOA: contains partitulate phase mass concentration\
+def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_phase_mass_SOA, time_interval, file_name, sheet):
+    # start_time: start of needed time, this time will be included in calculation \
+    # the format should match with that in time_column, given by user (e.g. in time column "Date&Time", \
+    # the format of time is "year-month-date hour:minute:second", so one example of start time is "2020-11-19 17:05:00")
+    # end_time: end of needed time, this time will be included in calculation \
+    # the format should match with that in time_column, given by user (e.g. in time column "Date&Time", \
+    # the format of time is "year-month-date hour:minute:second", so one example of end time is "2020-11-19 18:05:00")
+    # particulate_phase_mass_SOA: contains partitulate phase mass concentration (unit: ug/m3)\
     # for each SOA component in each size bin and each time, given in post processing file
-    # time_interval: time interval of observation data,  given by user
-    # file_name: name of the file that contains observation data, given by user
-    # sheet: name of the sheet that contains observation data in the above file, given by user
+    # time_interval: time interval of observation data (unit: minute),  given by user
+    # file_name: name of the file that contains observation data, given by user (e.g. "5-min SOA.xlsx")
+    # sheet: name of the sheet that contains observation data in the above file, given by user (e.g. "AMS")
 
     ### extract obervation data
     observation = pd.ExcelFile(file_name)
-    observation = observation.parse(sheet, skiprows=2)
+    observation = observation.parse(sheet, skiprows=skip_num)
+    observation = observation[:3100]
     observation = observation.loc[observation[time_column] >= start_time]
     observation = observation.loc[observation[time_column] <= end_time]
-    observation = observation[:length]
     observation_time = observation[time_column]
-    observation_data = observation["MOOOA"] + observation["LOOOA"] + observation["OOA"]
-    SOA_total = np.sum(particulate_phase_mass_SOA, axis=0)
-    SOA_total_average = []
+    observation_data = []
+    for i in SOA_list:
+        observation_data = observation_data+observation[i]
 
-    if smaller == 1:
-        start = 5 - int(start_time[-5:-3])+1
-        SOA_total_average.append(np.mean(SOA_total[:start]))
-    else:
-        start = 1
-        SOA_total_average.append(' ')
-        
-    for i in range(length-1):
-        SOA_total_average.append(np.mean(SOA_total[start+i*time_interval:start+(i+1)*time_interval]))
+    ### simulation data
+    SOA_total = particulate_phase_mass_SOA[1:, 2:]
+    SOA_total = SOA_total.astype(np.float)
+    SOA_total = np.sum(SOA_total, axis=0)
+    SOA_total_average = [SOA_total[0]]
+
+    for i in range(len(observation)-1):
+        SOA_total_average.append(np.mean(SOA_total[1+i*time_interval:1+(i+1)*time_interval]))
 
     ###convert to csv and plot
     comparison = pd.DataFrame({'observation time': observation_time,
