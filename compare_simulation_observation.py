@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 
 def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_phase_mass_SOA, time_interval, file_name, sheet):
     # start_time: start of needed time, this time will be included in calculation \
-    # the format should match with that in time_column, given by user (e.g. in time column "Date&Time", \
+    # the format should match with that in time_column, given by user (e.g. in time column "DateTime", \
     # the format of time is "year-month-date hour:minute:second", so one example of start time is "2020-11-19 17:05:00")
     # end_time: end of needed time, this time will be included in calculation \
     # the format should match with that in time_column, given by user (e.g. in time column "Date&Time", \
     # the format of time is "year-month-date hour:minute:second", so one example of end time is "2020-11-19 18:05:00")
+    # time_column: name of the column that contains detailed observation time, given by user (e.g. "DateTime")
     # particulate_phase_mass_SOA: contains partitulate phase mass concentration (unit: ug/m3)\
     # for each SOA component in each size bin and each time, given in post processing file
     # time_interval: time interval of observation data (unit: minute),  given by user
@@ -24,7 +25,7 @@ def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_p
     observation = observation.loc[observation[time_column] >= start_time]
     observation = observation.loc[observation[time_column] <= end_time]
     observation_time = observation[time_column]
-    observation_data = []
+    observation_data = [0]*len(observation)
     for i in SOA_list:
         observation_data = observation_data+observation[i]
 
@@ -41,4 +42,4 @@ def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_p
     comparison = pd.DataFrame({'observation time': observation_time,
                                'simulation (ug/m3)': SOA_total_average,
                                'observation (ug/m3)': observation_data})
-    comparison.to_csv("comparison between simulation and observation1.csv")
+    comparison.to_csv("comparison between simulation and observation.csv")
