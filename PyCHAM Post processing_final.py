@@ -118,19 +118,19 @@ species = gas_phase[0:(len(gas_phase)), 0].tolist()
 gas_phase_ppb_all = gas_phase
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_ppb_all = np.vstack((col_name, gas_phase_ppb_all))
-pd.DataFrame(gas_phase_ppb_all).to_csv("gas_phase_all (ppb).csv")
+pd.DataFrame(gas_phase_ppb_all).to_csv("gas_phase_all (ppb).csv", index=False, header=False)
 
 # Gas phase concentration for SOA components (ppb)
 gas_phase_ppb_SOA = gas_phase_ppb_all
 for i in nonSOA:
     gas_phase_ppb_SOA = gas_phase_ppb_SOA[gas_phase_ppb_SOA[:, 0] != ' ' + i]
-pd.DataFrame(gas_phase_ppb_SOA).to_csv("gas_phase_SOA (ppb).csv")
+pd.DataFrame(gas_phase_ppb_SOA).to_csv("gas_phase_SOA (ppb).csv", index=False, header=False)
 
 # Gas phase concentration for nonSOA components (ppb)
 gas_phase_ppb_nonSOA = np.array([i for i in gas_phase_ppb_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_ppb_nonSOA = np.vstack((col_name, gas_phase_ppb_nonSOA))
-pd.DataFrame(gas_phase_ppb_nonSOA).to_csv("gas_phase_nonSOA (ppb).csv")
+pd.DataFrame(gas_phase_ppb_nonSOA).to_csv("gas_phase_nonSOA (ppb).csv", index=False, header=False)
 
 # repeat molecular weight array by no. of times of size bins
 gas_phase = gas_phase[:, 2:]
@@ -144,19 +144,19 @@ for i in range(len(gas_phase_mass_all)):
     gas_phase_mass_all[i] = np.concatenate((gas_phase_mass_all[i][:2], gas_phase_mass[i]))
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_mass_all = np.vstack((col_name, gas_phase_mass_all))
-pd.DataFrame(gas_phase_mass_all).to_csv("gas_phase_all (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_all).to_csv("gas_phase_all (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 # Gas phase concentration (ug/m3) for SOA components
 gas_phase_mass_SOA = gas_phase_mass_all
 for i in nonSOA:
     gas_phase_mass_SOA = gas_phase_mass_SOA[gas_phase_mass_SOA[:, 0] != ' ' + i]
-pd.DataFrame(gas_phase_mass_SOA).to_csv("gas_phase_SOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_SOA).to_csv("gas_phase_SOA (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 # Gas phase concentration (ug/m3) for nonSOA components
 gas_phase_mass_nonSOA = np.array([i for i in gas_phase_mass_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_mass_nonSOA = np.vstack((col_name, gas_phase_mass_nonSOA))
-pd.DataFrame(gas_phase_mass_nonSOA).to_csv("gas_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(gas_phase_mass_nonSOA).to_csv("gas_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 # Gas phase concentration (molecules/cm3)
 gas_phase_number = gas_phase * factor
@@ -166,19 +166,19 @@ for i in range(len(gas_phase_number_all)):
     gas_phase_number_all[i] = np.concatenate((gas_phase_number_all[i][:2], gas_phase_number[i]))
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_number_all = np.vstack((col_name, gas_phase_number_all))
-pd.DataFrame(gas_phase_number_all).to_csv("gas_phase_all (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(gas_phase_number_all).to_csv("gas_phase_all (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 # Gas phase concentration (molecules/cm3) for SOA components
 gas_phase_number_SOA = gas_phase_number_all
 for i in nonSOA:
     gas_phase_number_SOA = gas_phase_number_SOA[gas_phase_number_SOA[:, 0] != ' ' + i]
-pd.DataFrame(gas_phase_number_SOA).to_csv("gas_phase_SOA (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(gas_phase_number_SOA).to_csv("gas_phase_SOA (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 # Gas phase concentration (molecules/cm3) for nonSOA components
 gas_phase_number_nonSOA = np.array([i for i in gas_phase_number_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Phase'] + [str(i) + ' minute' for i in range(len(time))]])
 gas_phase_number_nonSOA = np.vstack((col_name, gas_phase_number_nonSOA))
-pd.DataFrame(gas_phase_number_nonSOA).to_csv("gas_phase_nonSOA (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(gas_phase_number_nonSOA).to_csv("gas_phase_nonSOA (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 
 # Extract particulate phase concentration (molecules/cm3)
@@ -192,19 +192,19 @@ if len(wall_phase) == 0:
 particulate_phase_all = particulate_phase
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_all = np.vstack((col_name, particulate_phase_all))
-pd.DataFrame(particulate_phase_all).to_csv("particulate_phase_all (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(particulate_phase_all).to_csv("particulate_phase_all (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 # Particulate phase concentration (molecules/cm3) for SOA components
 particulate_phase_SOA = particulate_phase_all
 for i in nonSOA:
     particulate_phase_SOA = particulate_phase_SOA[particulate_phase_SOA[:, 0] != ' ' + i]
-pd.DataFrame(particulate_phase_SOA).to_csv("particulate_phase_SOA (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(particulate_phase_SOA).to_csv("particulate_phase_SOA (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 # Particulate phase concentration (molecules/cm3) for nonSOA components
 particulate_phase_nonSOA = np.array([i for i in particulate_phase_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_nonSOA = np.vstack((col_name, particulate_phase_nonSOA))
-pd.DataFrame(particulate_phase_nonSOA).to_csv("particulate_phase_nonSOA (molecules.(cc (air))\u207B\u00b9).csv")
+pd.DataFrame(particulate_phase_nonSOA).to_csv("particulate_phase_nonSOA (molecules.(cc (air))\u207B\u00b9).csv", index=False, header=False)
 
 # Convert from molecules/cm3 to ppb
 particulate_phase_ppb = particulate_phase[:, 2:particulate_phase.shape[1]]
@@ -217,19 +217,19 @@ for i in range(len(particulate_phase)):
     particulate_phase_ppb_all[i] = np.concatenate((particulate_phase[i][:2], particulate_phase_ppb[i]))
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_ppb_all = np.vstack((col_name, particulate_phase_ppb_all))
-pd.DataFrame(particulate_phase_ppb_all).to_csv("particulate_phase_all (ppb).csv")
+pd.DataFrame(particulate_phase_ppb_all).to_csv("particulate_phase_all (ppb).csv", index=False, header=False)
 
 # Particulate phase concentration (ppb) for SOA components
 particulate_phase_ppb_SOA = particulate_phase_ppb_all
 for i in nonSOA:
     particulate_phase_ppb_SOA = particulate_phase_ppb_SOA[particulate_phase_ppb_SOA[:, 0] != ' ' + i]
-pd.DataFrame(particulate_phase_ppb_SOA).to_csv("particulate_phase_SOA (ppb).csv")
+pd.DataFrame(particulate_phase_ppb_SOA).to_csv("particulate_phase_SOA (ppb).csv", index=False, header=False)
 
 # Particulate phase concentration (ppb) for nonSOA components
 particulate_phase_ppb_nonSOA = np.array([i for i in particulate_phase_ppb_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_ppb_nonSOA = np.vstack((col_name, particulate_phase_ppb_nonSOA))
-pd.DataFrame(particulate_phase_ppb_nonSOA).to_csv("particulate_phase_nonSOA (ppb).csv")
+pd.DataFrame(particulate_phase_ppb_nonSOA).to_csv("particulate_phase_nonSOA (ppb).csv", index=False, header=False)
 
 # repeat molecular weight array by no. of times of size bins
 temp = np.tile(molecular_weight, int(len(particulate_phase_ppb) / len(molecular_weight)))
@@ -243,19 +243,19 @@ for i in range(len(particulate_phase)):
     particulate_phase_mass_all[i] = np.concatenate((particulate_phase[i][:2], particulate_phase_mass[i]))
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_mass_all = np.vstack((col_name, particulate_phase_mass_all))
-pd.DataFrame(particulate_phase_mass_all).to_csv("particulate_phase_all (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(particulate_phase_mass_all).to_csv("particulate_phase_all (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 # Particulate phase concentration (ug/m3) for SOA components
 particulate_phase_mass_SOA = particulate_phase_mass_all
 for i in nonSOA:
     particulate_phase_mass_SOA = particulate_phase_mass_SOA[particulate_phase_mass_SOA[:, 0] != ' ' + i]
-pd.DataFrame(particulate_phase_mass_SOA).to_csv("particulate_phase_SOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(particulate_phase_mass_SOA).to_csv("particulate_phase_SOA (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 # Particulate phase concentration (ug/m3) for nonSOA components
 particulate_phase_mass_nonSOA = np.array([i for i in particulate_phase_mass_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', 'Sizebin'] + [str(i) + ' minute' for i in range(len(time))]])
 particulate_phase_mass_nonSOA = np.vstack((col_name, particulate_phase_mass_nonSOA))
-pd.DataFrame(particulate_phase_mass_nonSOA).to_csv("particulate_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv")
+pd.DataFrame(particulate_phase_mass_nonSOA).to_csv("particulate_phase_nonSOA (\u03BCg.m\u207B\u00b3).csv", index=False, header=False)
 
 ### total mass concentration (ug/m3) per species per size bin
 total_particulate_mass_species_sizebin = np.sum(particulate_phase_mass, axis=1)
@@ -268,14 +268,14 @@ for i in range(components_number):
         (particulate_phase[i][:1], total_particulate_mass_species_sizebin[i]))
 col_name = np.array([['Species'] + ['p ' + str(i + 1) for i in range(bin_number)]])
 total_particulate_mass_species_sizebin_all = np.vstack((col_name, total_particulate_mass_species_sizebin_all))
-pd.DataFrame(total_particulate_mass_species_sizebin_all).to_csv('perSpecies_perSizebin_all (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_sizebin_all).to_csv('perSpecies_perSizebin_all (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species per size bin for SOA components
 total_particulate_mass_species_sizebin_SOA = total_particulate_mass_species_sizebin_all
 for i in nonSOA:
     total_particulate_mass_species_sizebin_SOA = total_particulate_mass_species_sizebin_SOA[
         total_particulate_mass_species_sizebin_SOA[:, 0] != ' ' + i]
-pd.DataFrame(total_particulate_mass_species_sizebin_SOA).to_csv('perSpecies_perSizebin_SOA (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_sizebin_SOA).to_csv('perSpecies_perSizebin_SOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species per size bin for nonSOA components
 total_particulate_mass_species_sizebin_nonSOA = np.array(
@@ -283,7 +283,7 @@ total_particulate_mass_species_sizebin_nonSOA = np.array(
 col_name = np.array([['Species'] + ['p ' + str(i + 1) for i in range(bin_number)]])
 total_particulate_mass_species_sizebin_nonSOA = np.vstack((col_name, total_particulate_mass_species_sizebin_nonSOA))
 pd.DataFrame(total_particulate_mass_species_sizebin_nonSOA).to_csv(
-    'perSpecies_perSizebin_nonSOA (\u03BCg.m\u207B\u00b3).csv')
+    'perSpecies_perSizebin_nonSOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 ### total mass concentration (ug/m3) per species
 total_particulate_mass_species = np.sum(total_particulate_mass_species_sizebin, axis=1)
@@ -294,19 +294,19 @@ for i in range(components_number):
         (particulate_phase[i][:1], [total_particulate_mass_species[i]]))
 col_name = np.array([['Species', ' ']])
 total_particulate_mass_species_all = np.vstack((col_name, total_particulate_mass_species_all))
-pd.DataFrame(total_particulate_mass_species_all).to_csv('perSpecies_all (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_all).to_csv('perSpecies_all (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species for SOA components
 total_particulate_mass_species_SOA = total_particulate_mass_species_all
 for i in nonSOA:
     total_particulate_mass_species_SOA = total_particulate_mass_species_SOA[total_particulate_mass_species_SOA[:, 0] != ' ' + i]
-pd.DataFrame(total_particulate_mass_species_SOA).to_csv('perSpecies_SOA (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_SOA).to_csv('perSpecies_SOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species for nonSOA components
 total_particulate_mass_species_nonSOA = np.array([i for i in total_particulate_mass_species_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species', ' ']])
 total_particulate_mass_species_nonSOA = np.vstack((col_name, total_particulate_mass_species_nonSOA))
-pd.DataFrame(total_particulate_mass_species_nonSOA).to_csv('perSpecies_nonSOA (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_nonSOA).to_csv('perSpecies_nonSOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 ### total mass concentration (ug/m3) per species per time
 total_particulate_mass_species_time = np.array_split(particulate_phase_mass, bin_number)
@@ -319,21 +319,22 @@ for i in range(components_number):
     total_particulate_mass_species_time_all[i] = np.concatenate((particulate_phase[i][:1], total[i]))
 col_name = np.array([['Species'] + [str(i) + ' minute' for i in range(len(time))]])
 total_particulate_mass_species_time_all = np.vstack((col_name, total_particulate_mass_species_time_all))
-pd.DataFrame(total_particulate_mass_species_time_all).to_csv('perSpecies_perTime_all (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_time_all).to_csv('perSpecies_perTime_all (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species per time for SOA components
 total_particulate_mass_species_time_SOA = total_particulate_mass_species_time_all
 for i in nonSOA:
     total_particulate_mass_species_time_SOA = total_particulate_mass_species_time_SOA[
         total_particulate_mass_species_time_SOA[:, 0] != ' ' + i]
-pd.DataFrame(total_particulate_mass_species_time_SOA).to_csv('perSpecies_perTime_SOA (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_time_SOA).to_csv('perSpecies_perTime_SOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
 # total mass concentration (ug/m3) per species per time for nonSOA components
 total_particulate_mass_species_time_nonSOA = np.array(
     [i for i in total_particulate_mass_species_time_all if i[0][1:] in nonSOA])
 col_name = np.array([['Species'] + [str(i) + ' minute' for i in range(len(time))]])
 total_particulate_mass_species_time_nonSOA = np.vstack((col_name, total_particulate_mass_species_time_nonSOA))
-pd.DataFrame(total_particulate_mass_species_time_nonSOA).to_csv('perSpecies_perTime_nonSOA (\u03BCg.m\u207B\u00b3).csv')
+pd.DataFrame(total_particulate_mass_species_time_nonSOA).to_csv('perSpecies_perTime_nonSOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
+
 ##### particle_number_concentration_dry_number
 particle_number_concentration_dry_file_path = r"particle_number_concentration_dry"
 particle_number_concentration_dry = open(particle_number_concentration_dry_file_path, "r+")
@@ -374,18 +375,18 @@ for i in range(len(tracked_comp)):
 
     # number concentration, unit: molecules/cc.s (air)
     rate_of_change_number = rate_of_change
-    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+"_rate_of_change_(molecules.(cc.s (air)).\u207B\u00b9).csv")
+    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+"_rate_of_change_(molecules.(cc.s (air)).\u207B\u00b9).csv", index=False, header=False)
 
     # ppb
     rate_of_change_ppb = rate_of_change
     rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[1:]).transpose()
-    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv")
+    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv", index=False, header=False)
 
     # mass concentration, unit: ug/m3
     temperature_new = np.tile(temperature[0], (len(rate_of_change) - 1, len(rate_of_change[0])))
     rate_of_change_mass = rate_of_change_ppb
     rate_of_change_mass[1:] = rate_of_change_mass[1:] * 12.187 / temperature_new * tracked_comp_weight[0]
-    pd.DataFrame(rate_of_change_mass).to_csv(tracked_comp[i]+"_rate_of_change (\u03BCg.m\u207B\u00b3.s\u207B\u00b9).csv")
+    pd.DataFrame(rate_of_change_mass).to_csv(tracked_comp[i]+"_rate_of_change (\u03BCg.m\u207B\u00b3.s\u207B\u00b9).csv", index=False, header=False)
 
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
