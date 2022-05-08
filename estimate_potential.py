@@ -26,4 +26,4 @@ def estimate_potential(gas_phase_mass_SOA,total_particulate_mass_species_time_SO
         potential[i] = np.concatenate((potential[i][:1], potential_SOA[i]))
     col_name = np.array([[' '] + [str(i) + ' minute' for i in range(len(total_particulate_mass_species_time_SOA[0])-1)]])
     potential = np.vstack((col_name, potential))
-    pd.DataFrame(potential).to_csv('SOA_potential.csv')
+    pd.DataFrame(potential).to_csv('SOA_potential.csv', index=False, header=False)
