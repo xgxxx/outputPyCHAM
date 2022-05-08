@@ -16,15 +16,11 @@ radius_um = pd.DataFrame([radius[i].split(",") for i in range(2, len(radius))])
 radius_um.to_csv('Radius (\u03BCm).csv')
 radius = [radius[i].split(",") for i in range(2, len(radius))]
 radius = np.array(radius).astype(float)
-radius_mm = radius*10**(-3)
-pd.DataFrame(radius_mm).to_csv('Radius (mm).csv')
 
 ##### Size bin diameter (unit: um & mm)
 diameter = radius*2
 diameter_um = diameter
 pd.DataFrame(diameter_um).to_csv('Diameter (\u03BCm).csv')
-diameter_mm = diameter*10**(-3)
-pd.DataFrame(diameter_mm).to_csv('Diameter (mm).csv')
 
 ##### time (unit: min)
 time_path = r"time"
