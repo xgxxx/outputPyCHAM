@@ -4,14 +4,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_phase_mass_SOA, time_interval, file_name, sheet):
+def compare(skip_num, SOA_list, time_column, start_time, end_time, particulate_phase_mass_SOA, time_interval, file_name, sheet):
+    # skip_num: number of lines of header in observation file to skip, given by user
+    # SOA_list: the list contains names of all SOA components (e.g. ["MOOOA", "LOOOA", "OOA"])
+    # time_column: name of the column that contains detailed observation time, given by user (e.g. "DateTime")
     # start_time: start of needed time, this time will be included in calculation \
     # the format should match with that in time_column, given by user (e.g. in time column "DateTime", \
     # the format of time is "year-month-date hour:minute:second", so one example of start time is "2020-11-19 17:05:00")
     # end_time: end of needed time, this time will be included in calculation \
     # the format should match with that in time_column, given by user (e.g. in time column "Date&Time", \
     # the format of time is "year-month-date hour:minute:second", so one example of end time is "2020-11-19 18:05:00")
-    # time_column: name of the column that contains detailed observation time, given by user (e.g. "DateTime")
     # particulate_phase_mass_SOA: contains partitulate phase mass concentration (unit: ug/m3)\
     # for each SOA component in each size bin and each time, given in post processing file
     # time_interval: time interval of observation data (unit: minute),  given by user
