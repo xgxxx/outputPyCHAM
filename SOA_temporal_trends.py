@@ -36,10 +36,10 @@ def SOA_insolation(time_interval, file_name, sheet, time_column, start_time, end
     SOA_total = particulate_phase_mass_SOA[1:, 2:]
     SOA_total = SOA_total.astype(np.float)
     SOA_total = np.sum(SOA_total, axis=0)
-    SOA_total_interval = np.zeros(len(insolation))
-    SOA_total_interval[0] = SOA_total[0]
-    for i in range(len(insolation)-1):
-        SOA_total_interval[i+1] = np.mean(SOA_total[1+time_interval*i:1+time_interval*(i+1)])
+    num_data = int(len(SOA_total)/time_interval)
+    SOA_total_interval = np.zeros(num_data)
+    for i in range(num_data):
+        SOA_total_interval[i] = np.mean(SOA_total[time_interval*i:time_interval*(i+1)])
 
     ### scatter plot and save
     plt.figure(1)
@@ -51,7 +51,7 @@ def SOA_insolation(time_interval, file_name, sheet, time_column, start_time, end
     plt.savefig("SOA temporal trends-Solar radiation")
 
     ### convert to csv file
-    SOA_temporal_trends = [['SOA (ug/m3)', 'Insolation']]
+    SOA_temporal_trends = [['SOA (ug/m3)', 'Insolation (W/m2)']]
     for i in range(len(insolation)):
         SOA_temporal_trends.append([SOA_total_interval[i], insolation[i]])
     pd.DataFrame(SOA_temporal_trends).to_csv("SOA_temporal_trends.csv")
