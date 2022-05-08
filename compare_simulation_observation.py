@@ -21,7 +21,6 @@ def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_p
     ### extract obervation data
     observation = pd.ExcelFile(file_name)
     observation = observation.parse(sheet, skiprows=skip_num)
-    observation = observation[:3100]
     observation = observation.loc[observation[time_column] >= start_time]
     observation = observation.loc[observation[time_column] <= end_time]
     observation_time = observation[time_column]
@@ -33,13 +32,13 @@ def compare(skip_num, SOA_list, start_time, end_time, time_column, particulate_p
     SOA_total = particulate_phase_mass_SOA[1:, 2:]
     SOA_total = SOA_total.astype(np.float)
     SOA_total = np.sum(SOA_total, axis=0)
-    SOA_total_average = [SOA_total[0]]
+    SOA_total_average = []
 
-    for i in range(len(observation)-1):
-        SOA_total_average.append(np.mean(SOA_total[1+i*time_interval:1+(i+1)*time_interval]))
+    for i in range(len(observation)):
+        SOA_total_average.append(np.mean(SOA_total[i*time_interval:(i+1)*time_interval]))
 
     ###convert to csv and plot
     comparison = pd.DataFrame({'observation time': observation_time,
                                'simulation (ug/m3)': SOA_total_average,
                                'observation (ug/m3)': observation_data})
-    comparison.to_csv("comparison between simulation and observation.csv")
+    comparison.to_csv("comparison between simulation and observation.csv", index=False)
