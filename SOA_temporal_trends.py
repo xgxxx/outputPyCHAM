@@ -47,7 +47,6 @@ def SOA_insolation(time_interval, file_name, sheet, time_column, start_time, end
     plt.xlabel("Solar Radiation (W/m\u00b2)")
     plt.ylabel("SOA concentration (\u03BCg/m\u00b3)")
     plt.title("SOA temporal trends (time interval: " + str(time_interval) + " minutes)")
-    plt.show()
     plt.savefig("SOA temporal trends-Solar radiation")
 
     ### convert to csv file
