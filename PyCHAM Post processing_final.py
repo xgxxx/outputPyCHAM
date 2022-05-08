@@ -83,8 +83,11 @@ organic_alkoxy_radical_index = [int(i) for i in organic_alkoxy_radical_index]
 bin_number = int(information[0].split(",")[1])
 components_number = int(information[1].split(",")[1])
 
-##### non SOA components
-nonSOA = ['core', 'H2O', 'AMMSUL']
+# nonSOA components, a txt file "nonSOA.txt" is given by user in which there is a line containing the names of all nonSOA components (e.g. core, H2O, AMMSUL)
+nonSOA_path = r"nonSOA.txt"
+nonSOA = open(nonSOA_path, "r+")
+nonSOA = nonSOA.readlines()
+nonSOA = nonSOA[0].split(", ")
 components_number_SOA = components_number-len(nonSOA)
 
 #Extract saturation vapor pressure at 298.15K of species
