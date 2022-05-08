@@ -184,7 +184,9 @@ pd.DataFrame(gas_phase_number_nonSOA).to_csv("gas_phase_nonSOA (molecules.(cc (a
 # Extract particulate phase concentration (molecules/cm3)
 particulate_phase = concentration[concentration[:, 1] != "g"]
 particulate_phase = particulate_phase[particulate_phase[:, 1] != "w"]
-particulate_phase[-1][1] = particulate_phase[-1][1][:-1]
+wall_phase = concentration[concentration[:, 1] == "w"]
+if len(wall_phase) == 0:
+    particulate_phase[-1][1] = particulate_phase[-1][1][:-1]
 
 # Particulate phase concentration (molecules/cm3) for all components
 particulate_phase_all = particulate_phase
