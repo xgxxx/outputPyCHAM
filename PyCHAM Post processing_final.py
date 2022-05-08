@@ -359,10 +359,6 @@ tracked_comp = model_variable[model_variable[:,0] == "tracked_comp "]
 tracked_comp = tracked_comp[0][1].split(", ")
 tracked_comp[0] = tracked_comp[0][1:]
 tracked_comp[-1] = tracked_comp[-1][:-1]
-# get tracked components' indices
-tracked_comp_index = [components.index(i) for i in tracked_comp if i in components]
-# get tracked components' molecular weights
-tracked_comp_weight = [molecular_weight[i] for i in tracked_comp_index]
 
 for i in range(len(tracked_comp)):
     rate_of_change_file_path = tracked_comp[i] + "_rate_of_change"
