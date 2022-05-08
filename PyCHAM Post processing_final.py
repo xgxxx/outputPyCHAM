@@ -350,6 +350,10 @@ particle_number_concentration_wet= pd.DataFrame([particle_number_concentration_w
 particle_number_concentration_wet.to_csv('particle_number_concentration_wet_number.csv')
 
 ### Get information of tracked components
+# the path (path_model_var) of txt file "Model variable.txt" is given by user
+path_model_var = r'C:\Users\24979\PyCHAM\PyCHAM\output\Chemical kpp file\41bins\inputs'
+os.chdir(path_model_var)
+
 # get tracked components' names
 model_variable_path = r"Model variable.txt"
 model_variable = open(model_variable_path, "r+")
@@ -360,6 +364,7 @@ tracked_comp = tracked_comp[0][1].split(", ")
 tracked_comp[0] = tracked_comp[0][1:]
 tracked_comp[-1] = tracked_comp[-1][:-1]
 
+os.chdir(path)
 for i in range(len(tracked_comp)):
     rate_of_change_file_path = tracked_comp[i] + "_rate_of_change"
     rate_of_change = open(rate_of_change_file_path, "r+")
@@ -372,13 +377,13 @@ for i in range(len(tracked_comp)):
     # number concentration, unit: molecules/cc.s (air)
     rate_of_change_number = rate_of_change
     rate_of_change_number = rate_of_change_number.transpose()
-    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+"_rate_of_change_(molecules.(cc.s (air)).\u207B\u00b9).csv", index=False, header=False)
+    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+" rate of change (molecules.(cc.s (air)).\u207B\u00b9).csv", index=False, header=False)
 
     # ppb
     rate_of_change_ppb = rate_of_change
     rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[:-1]).transpose()
     rate_of_change_ppb = rate_of_change_ppb.transpose()
-    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv", index=False, header=False)
+    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+" rate of change (ppb.s\u207B\u00b9).csv", index=False, header=False)
 
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
