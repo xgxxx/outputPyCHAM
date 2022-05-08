@@ -335,6 +335,17 @@ col_name = np.array([['Species'] + [str(i) + ' minute' for i in range(len(time))
 total_particulate_mass_species_time_nonSOA = np.vstack((col_name, total_particulate_mass_species_time_nonSOA))
 pd.DataFrame(total_particulate_mass_species_time_nonSOA).to_csv('perSpecies_perTime_nonSOA (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
 
+# total SOA mass concentration for all components in each size bin at each time
+total_sizebin_time_data = np.empty([bin_number, len(time)])
+for bins in range(bin_number):
+    temp_sum = particulate_phase_mass[components_number_SOA * bins:components_number_SOA * (bins + 1)]
+    temp_sum = np.sum(temp_sum, axis=0)
+    total_sizebin_time_data[bins] = temp_sum
+total_sizebin_time = particulate_phase_mass_all[:bin_number+1, 1:]
+for i in range(len(total_sizebin_time_data)):
+    total_sizebin_time[i+1] = np.concatenate((['p'+str(i+1)], total_sizebin_time_data[i]))
+pd.DataFrame(total_sizebin_time).to_csv('perSizebin perTime (\u03BCg.m\u207B\u00b3).csv', index=False, header=False)
+
 ##### particle_number_concentration_dry_number
 particle_number_concentration_dry_file_path = r"particle_number_concentration_dry"
 particle_number_concentration_dry = open(particle_number_concentration_dry_file_path, "r+")
