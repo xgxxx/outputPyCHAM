@@ -382,12 +382,6 @@ for i in range(len(tracked_comp)):
     rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[:-1]).transpose()
     pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+"_rate_of_change (ppb.s\u207B\u00b9).csv", header=False)
 
-    # mass concentration, unit: ug/m3
-    temperature_new = np.tile(temperature[0], (len(rate_of_change) - 1, len(rate_of_change[0])))
-    rate_of_change_mass = rate_of_change_ppb
-    rate_of_change_mass[1:] = rate_of_change_mass[1:] * 12.187 / temperature_new * tracked_comp_weight[0]
-    pd.DataFrame(rate_of_change_mass).to_csv(tracked_comp[i]+"_rate_of_change (\u03BCg.m\u207B\u00b3.s\u207B\u00b9).csv", header=False)
-
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
 total_concentration_of_injected_components = open(total_concentration_of_injected_components_file_path, "r+")
